@@ -1,9 +1,8 @@
 import pickle
 import streamlit as st
-import joblib
 
-# Load the saved model using Joblib
-model = joblib.load('diabetes.sav')
+with open('diabetes.sav', 'rb') as file:
+    model = pickle.load(file)
 
 # Page title
 st.title('Diabetes Prediction using ML')
