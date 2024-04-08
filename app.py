@@ -49,6 +49,8 @@ if st.button('Predict Diabetes'):
     try:
         input_data = [[Pregnancies, Glucose, BloodPressure, SkinThickness,
                        Insulin, BMI, DiabetesPedigreeFunction, Age]]
+        # Normalize input data if needed (e.g., scaling to match model training data)
+        # Make predictions using the loaded model
         prediction = Diabetes_model.predict(input_data)
         if prediction[0] == 1:
             st.error('You have diabetes!')
