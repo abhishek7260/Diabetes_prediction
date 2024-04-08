@@ -1,8 +1,14 @@
 import pickle
 import streamlit as st
 
-# Load the saved model using pickle
-model=pickle.load(open('diabetes.sav','rb'))
+# Load the saved model
+try:
+    with open('diabetes_prediction.pkl', 'rb') as file:
+        Diabetes_model = pickle.load(file)
+except FileNotFoundError:
+    st.error("Model file not found. Please check the file path.")
+except Exception as e:
+    st.error(f"Error loading the model: {e}")
 
 # Page title
 st.title('Diabetes Prediction using ML')
@@ -45,13 +51,10 @@ if st.button('Predict Diabetes'):
                        Insulin, BMI, DiabetesPedigreeFunction, Age]]
         # Normalize input data if needed (e.g., scaling to match model training data)
         # Make predictions using the loaded model
-        prediction = model.predict(input_data)
-        if len(prediction) > 0:
-            if prediction[0] == 1:
-                st.error('You have diabetes!')
-            else:
-                st.success('You do not have diabetes.')
+        prediction = Diabetes_model.predict(input_data)
+        if prediction[0] == 1:
+            st.error('You have diabetes!')
         else:
-            st.error('Failed to make a prediction. Please check input data.')
+            st.success('You do not have diabetes.')
     except ValueError:
         st.error('Please enter valid numerical values for all input fields.')
