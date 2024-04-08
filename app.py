@@ -2,7 +2,7 @@ import pickle
 import streamlit as st
 
 # Load the saved model
-model = pickle.load(open('diabetes_prediction.pkl', 'rb'))
+model = pickle.load(open('diabetes.sav', 'rb'))
 
 # Page title
 st.title('Diabetes Prediction using ML')
