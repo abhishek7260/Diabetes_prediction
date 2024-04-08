@@ -2,8 +2,13 @@ import pickle
 import streamlit as st
 
 # Load the saved model
-with open('diabetes_prediction.pkl', 'rb') as file:
-    Diabetes_model = pickle.load(file)
+try:
+    with open('diabetes_prediction.pkl', 'rb') as file:
+        Diabetes_model = pickle.load(file)
+except FileNotFoundError:
+    st.error("Model file not found. Please check the file path.")
+except Exception as e:
+    st.error(f"Error loading the model: {e}")
 
 # Page title
 st.title('Diabetes Prediction using ML')
