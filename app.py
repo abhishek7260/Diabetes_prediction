@@ -1,9 +1,30 @@
 import pickle
+import pandas as pd
+from sklearn.svm import SVC
+from sklearn.model_selection import train_test_split
 import streamlit as st
 
-# Load the saved model using pickle
-with open('diabetes.sav', 'rb') as file:
-    model = pickle.load(file)
+# Load the CSV file into a DataFrame
+diabetes_df = pd.read_csv('diabetes.csv')
+
+# Assuming the CSV file contains features (X) and a target variable (y)
+X = diabetes_df.drop('Outcome', axis=1)  # Features
+y = diabetes_df['Outcome']  # Target variable
+
+# Split the data into training and testing sets
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+from sklearn.preprocessing import StandardScaler
+ss=StandardScaler()
+x_train_ss=ss.fit_transform(x_train)
+x_test_ss=ss.transform(x_test)
+
+# Create and fit the SVC model
+model= SVC(kernel='sigmoid', C=1, random_state=42)
+model.fit(x_train_ss, y_train)
+
+# Save the model using pickle
+with open('diabetes_model.sav', 'wb') as file:
+    pickle.dump(model, file)
 
 # Page title
 st.title('Diabetes Prediction using ML')
@@ -39,19 +60,10 @@ prediction = ''
 
 # Prediction button
 if st.button('Predict Diabetes'):
-    # Ensure input data is valid and convert to appropriate types
-    try:
-        input_data = [[Pregnancies, Glucose, BloodPressure, SkinThickness,
-                       Insulin, BMI, DiabetesPedigreeFunction, Age]]
-        # Normalize input data if needed (e.g., scaling to match model training data)
-        # Make predictions using the loaded model
-        prediction = model.predict(input_data)
-        if len(prediction) > 0:
-            if prediction[0] == 1:
-                st.error('You have diabetes!')
-            else:
-                st.success('You do not have diabetes.')
-        else:
-            st.error('Failed to make a prediction. Please check input data.')
-    except ValueError:
-        st.error('Please enter valid numerical values for all input fields.')
+
+    prediction = model.predict([[Pregnancies, Glucose, BloodPressure, SkinThickness,
+                   Insulin, BMI, DiabetesPedigreeFunction, Age]])
+    if prediction == 1:
+        st.error('You have diabetes!')
+    else:
+        st.success('You do not have diabetes.')
